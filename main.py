@@ -1,24 +1,36 @@
-# Solicitar el nombre del producto al usuario
-nombre = input("Ingrese el nombre del producto: ")
+from src.inventario import agregar_producto,ver_inventario,eliminar_producto,editar_producto,calcular_estadisticas
+# Menú principal
 
-# Solicitar y validar el precio del producto
 while True:
-    try:
-        precio = float(input("Ingrese el precio del producto: "))
-        break  # Sale del ciclo si el valor es válido
-    except ValueError:
-        print("Error: Debe ingresar un número válido para el precio.")
 
-# Solicitar y validar la cantidad del producto
-while True:
-    try:
-        cantidad = int(input("Ingrese la cantidad del producto: "))
-        break  # Sale del ciclo si el valor es válido
-    except ValueError:
-        print("Error: Debe ingresar un número entero válido para la cantidad.")
+    print("----- MENÚ -----")
+    print("1. Agregar producto.")
+    print("2. Ver inventario.")
+    print("3. Editar producto.")
+    print("4. Eliminar producto.")
+    print("5. Total productos.")
+    print("6. Salir.")
 
-# Calcular el costo total multiplicando precio por cantidad
-costo_total = precio * cantidad
+    opcion = input("Seleccione una opción: ")
 
-# Mostrar los resultados en la consola
-print(f"Producto: {nombre} | Precio: {precio} | Cantidad: {cantidad} | Total: {costo_total}")
+    if opcion == "1":
+        agregar_producto()
+
+    elif opcion == "2":
+        ver_inventario()
+
+    elif opcion == "3":
+        editar_producto()
+
+    elif opcion == "4":
+        eliminar_producto()    
+
+    elif opcion == "5":
+        calcular_estadisticas()    
+
+    elif opcion == "6":
+        print("Programa finalizado.")
+        break
+
+    else:
+        print("Opción inválida.\n")
