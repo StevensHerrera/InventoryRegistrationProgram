@@ -1,7 +1,7 @@
+from src.archivo import guardar_csv,cargar_csv
 # Aca se definen las funciones para llamarlas en el archivo main
 # Crear una lista para guardar los productos
 inventario = []
-
 
 # Función para agregar un producto
 def agregar_producto():
@@ -39,28 +39,8 @@ def agregar_producto():
 
     print("Producto agregado correctamente.\n")
     
-"""
-# Función para ver el inventario
-def ver_inventario():
-    if len(inventario) == 0:
-        print("El inventario está vacío.\n")
-    else:
-        print("\n--- INVENTARIO ---")
-        for i, producto in enumerate(inventario):
-            print(
-                str(i + 1)
-                + ". Producto: "
-                + producto["nombre"]
-                + " | Precio: "
-                + str(producto["precio"])
-                + " | Cantidad: "
-                + str(producto["cantidad"])
-                + " | Total: "
-                + str(producto["total"])
-            )
-        print()
-"""
 
+# Función para ver el inventario
 def ver_inventario():
     if not inventario:  # En Python, una lista vacía se evalúa como False
         print("El inventario está vacío.\n")
@@ -114,6 +94,27 @@ def editar_producto():
     except ValueError:
         print("Error: Ingrese un valor válido.\n")
 
+#Funcion para buscar un producto en el inventario
+def buscar_producto(inventario, nombre):
+    """
+    Busca un producto por nombre exacto (sin importar mayúsculas).
+    Retorna el diccionario del producto o None si no lo encuentra.
+    """
+    for producto in inventario:
+        if producto['nombre'].lower() == nombre.lower():
+            return producto
+    return None
+
+def buscar_en_menu():
+    nombre_buscado = input("Ingrese el nombre exacto del producto a buscar: ")
+    resultado = buscar_producto(inventario, nombre_buscado)
+    
+    if resultado:
+        print(f"\nProducto encontrado: {resultado['nombre']}")
+        print(f"Precio: ${resultado['precio']:.2f} | Stock: {resultado['cantidad']}")
+    else:
+        print("El producto no existe en el inventario.\n")
+
 # Función para eliminar un producto
 def eliminar_producto():
     if len(inventario) == 0:
@@ -151,3 +152,30 @@ def calcular_estadisticas():
     print(f"Tipos de productos registrados:  {total_tipos_productos}")
     print(f"Valor total del inventario:      ${valor_total_inventario:,.2f}")
     print("-" * 35 + "\n")
+
+#Funcion para guardar datos en el inventario.csv
+def guardar_datos():
+    guardar_csv(inventario, "data/inventario.csv")
+
+#Funcion para cargar los datos del csv en el inventario
+def ejecutar_carga_interactiva():
+    datos, filas_malas = cargar_csv("data/inventario.csv")
+    if datos is None: return
+
+    print(f"Leídos {len(datos)} productos. Filas omitidas: {filas_malas}")
+    opcion = input("¿Sobrescribir (S) o Fusionar (N)?: ").upper()
+
+    if opcion == 'S':
+        inventario.clear()
+        inventario.extend(datos)
+        print("Se Reemplazado el inventario.")
+    else:
+        for nuevo in datos:
+            exis = buscar_producto(inventario, nuevo['nombre'])
+            if exis:
+                exis['cantidad'] += nuevo['cantidad']
+                exis['precio'] = nuevo['precio']
+                exis['total'] = exis['precio'] * exis['cantidad']
+            else:
+                inventario.append(nuevo)
+        print("Inventario fusionado.")
